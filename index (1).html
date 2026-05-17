@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kazi Eajaj Hossain</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06070d;
+  --bg2: #0b0d18;
+  --surface: #0f1220;
+  --border: #1c2138;
+  --border2: #252b42;
+  --eng-a: #3d8bff;
+  --eng-b: #00d4aa;
+  --eng-c: #ff7043;
+  --res-a: #c9a96e;
+  --res-b: #9b6dff;
+  --res-c: #ff6b9d;
+  --accent: var(--eng-a);
+  --accent2: var(--eng-b);
+  --accent3: var(--eng-c);
+  --text: #dde3f0;
+  --muted: #5e6a88;
+  --muted2: #8a96b0;
+  --card: #0d1022;
+}
+body.researcher {
+  --accent: var(--res-a);
+  --accent2: var(--res-b);
+  --accent3: var(--res-c);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;overflow-x:hidden;}
+
+/* Noise */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.35;}
+
+/* Cursor */
+.cur{position:fixed;pointer-events:none;z-index:9000;mix-blend-mode:screen;}
+.cur-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);transition:background .3s,transform .15s;}
+.cur-ring{width:32px;height:32px;border:1px solid var(--accent);border-radius:50%;transform:translate(-50%,-50%);transition:border-color .3s;opacity:.45;}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:0 3rem;height:60px;background:rgba(6,7,13,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;letter-spacing:-.02em;color:var(--text);text-decoration:none;}
+.nav-logo span{color:var(--accent);transition:color .4s;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--muted2);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:var(--accent);}
+
+/* Mode Toggle */
+.mode-toggle{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px;overflow:hidden;}
+.mode-btn{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.08em;padding:.35rem .9rem;border-radius:4px;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .25s;white-space:nowrap;}
+.mode-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.35);}
+
+/* Mode visibility */
+body.researcher .eng-only{display:none;}
+body:not(.researcher) .res-only{display:none;}
+
+/* Shared section */
+section{position:relative;padding:6rem 3rem;z-index:1;}
+.eyebrow{display:flex;align-items:center;gap:.75rem;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;transition:color .4s;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--accent);transition:background .4s;}
+.sec-title{font-family:'Outfit',sans-serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:3rem;}
+.sec-title em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--accent);transition:color .4s;}
+
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;align-items:center;padding:0 3rem;overflow:hidden;}
+.hero-scanlines{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.hero-scanlines span{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(61,139,255,.07),transparent);animation:scan 9s linear infinite;}
+.hero-scanlines span:nth-child(2){top:40%;animation-delay:3s;}
+.hero-scanlines span:nth-child(3){top:70%;animation-delay:6s;}
+@keyframes scan{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+body.researcher .hero-scanlines span{background:linear-gradient(90deg,transparent,rgba(201,169,110,.07),transparent);}
+
+.hero-grid{display:grid;grid-template-columns:1fr 360px;gap:4rem;align-items:center;width:100%;max-width:1200px;margin:0 auto;padding-top:60px;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;border-radius:100px;padding:.35rem 1rem;margin-bottom:1.5rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid;transition:all .4s;animation:fup .5s ease both;}
+.hero-badge.eng-only{background:rgba(61,139,255,.08);border-color:rgba(61,139,255,.2);}
+.hero-badge.res-only{background:rgba(201,169,110,.08);border-color:rgba(201,169,110,.2);}
+.bdot{width:5px;height:5px;background:var(--accent2);border-radius:50%;animation:ping 2s infinite;transition:background .4s;}
+@keyframes ping{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.25;transform:scale(1.6);}}
+
+.hero-name{font-family:'Outfit',sans-serif;font-weight:800;font-size:clamp(3.5rem,8vw,6.5rem);line-height:.92;letter-spacing:-.04em;margin-bottom:1.2rem;animation:fup .5s .08s ease both;}
+.hero-name .outline{-webkit-text-stroke:1.5px rgba(61,139,255,.4);color:transparent;transition:-webkit-text-stroke .4s;}
+body.researcher .hero-name .outline{-webkit-text-stroke:1.5px rgba(201,169,110,.4);}
+.hero-role{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(1.2rem,2.5vw,1.7rem);color:var(--muted2);margin-bottom:1.2rem;animation:fup .5s .16s ease both;}
+.hero-role strong{color:var(--accent);font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.82em;transition:color .4s;}
+.hero-desc{font-size:.79rem;line-height:1.9;color:var(--muted);max-width:490px;margin-bottom:2rem;animation:fup .5s .24s ease both;}
+.hero-cta{display:flex;gap:.75rem;flex-wrap:wrap;animation:fup .5s .32s ease both;}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.65rem 1.5rem;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.05em;text-decoration:none;transition:all .2s;cursor:pointer;border:none;}
+.btn-p{background:var(--accent);color:#fff;transition:background .4s,transform .2s,box-shadow .2s;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(61,139,255,.3);}
+body.researcher .btn-p:hover{box-shadow:0 8px 28px rgba(201,169,110,.3);}
+.btn-g{background:transparent;border:1px solid var(--border2);color:var(--muted2);}
+.btn-g:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+
+/* Hero card */
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;position:relative;overflow:hidden;animation:fup .5s .4s ease both;}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:background .4s;}
+.hc-label{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;}
+.hc-stats{display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem;}
+.hc-stat{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:.75rem;border-bottom:1px solid var(--border);}
+.hc-stat:last-child{border:none;padding-bottom:0;}
+.hc-s-label{font-size:.63rem;color:var(--muted);}
+.hc-s-val{font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;color:var(--accent);transition:color .4s;}
+.hc-s-unit{font-size:.58rem;color:var(--muted2);margin-left:.2rem;}
+.hc-links{display:flex;flex-direction:column;gap:.5rem;}
+.hc-link{display:flex;align-items:center;gap:.75rem;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem .9rem;text-decoration:none;color:var(--muted2);font-size:.65rem;transition:border-color .2s,color .2s,transform .2s;}
+.hc-link:hover{border-color:var(--accent);color:var(--accent);transform:translateX(3px);}
+.hc-link-ic{width:18px;text-align:center;color:var(--accent);flex-shrink:0;transition:color .4s;}
+
+@keyframes fup{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── ABOUT ── */
+#about{background:var(--bg2);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;}
+.about-txt{font-size:.79rem;line-height:1.95;color:var(--muted2);}
+.about-txt p{margin-bottom:1rem;}
+.about-txt strong{color:var(--text);}
+.about-txt .hl{color:var(--accent);transition:color .4s;}
+.skills-list{display:flex;flex-direction:column;gap:.85rem;}
+.sk-row{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;transition:border-color .25s;}
+.sk-row:hover{border-color:var(--border2);}
+.sk-name{font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent2);margin-bottom:.5rem;transition:color .4s;}
+.pills{display:flex;flex-wrap:wrap;gap:.35rem;}
+.pill{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted2);font-size:.6rem;padding:.2rem .55rem;border-radius:3px;}
+
+/* ── EXPERIENCE ── */
+#experience{background:var(--bg);}
+.exp-list{display:flex;flex-direction:column;gap:2.5rem;}
+.exp-item{display:grid;grid-template-columns:150px 1fr;gap:2rem;}
+.exp-dt{font-size:.63rem;color:var(--muted);line-height:1.6;padding-top:.2rem;text-align:right;}
+.exp-dt strong{display:block;color:var(--accent2);font-size:.68rem;transition:color .4s;}
+.exp-body{border-left:1px solid var(--border);padding-left:2rem;position:relative;}
+.exp-body::before{content:'';position:absolute;left:-4px;top:.3rem;width:7px;height:7px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--accent);transition:background .4s,box-shadow .4s;}
+.exp-role{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.25rem;}
+.exp-co{font-size:.7rem;color:var(--accent);margin-bottom:.85rem;transition:color .4s;}
+.exp-bul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.exp-bul li{font-size:.76rem;color:var(--muted2);line-height:1.7;padding-left:1rem;position:relative;}
+.exp-bul li::before{content:'›';position:absolute;left:0;color:var(--accent);transition:color .4s;}
+
+/* ── RESEARCH EXP ── */
+#research-exp{background:var(--bg2);}
+.rexp-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2.5rem;position:relative;overflow:hidden;max-width:900px;}
+.rexp-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--res-a),var(--res-b));}
+.rexp-lbl{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--res-a);margin-bottom:.5rem;}
+.rexp-title{font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;margin-bottom:.25rem;}
+.rexp-meta{font-size:.68rem;color:var(--muted);margin-bottom:1.75rem;}
+.rexp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.rexp-bl-title{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--res-b);margin-bottom:.55rem;}
+.rexp-bul{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.rexp-bul li{font-size:.74rem;color:var(--muted2);line-height:1.65;padding-left:1.1rem;position:relative;}
+.rexp-bul li::before{content:'◆';position:absolute;left:0;color:var(--res-a);font-size:.45rem;top:.3rem;}
+
+/* ── PROJECTS ── */
+#projects{background:var(--bg2);}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2rem;position:relative;overflow:hidden;transition:transform .25s,border-color .25s,box-shadow .25s;}
+.proj-card:hover{transform:translateY(-5px);border-color:var(--border2);box-shadow:0 20px 50px rgba(0,0,0,.5);}
+.proj-card::before{content:attr(data-n);font-family:'Outfit',sans-serif;font-size:5rem;font-weight:800;color:rgba(255,255,255,.025);position:absolute;top:.5rem;right:1rem;line-height:1;pointer-events:none;}
+.p-badge{display:inline-block;border-radius:3px;font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;margin-bottom:1rem;border:1px solid;}
+.p-badge.flag{background:rgba(0,212,170,.08);border-color:rgba(0,212,170,.25);color:var(--eng-b);}
+.p-badge.pipe{background:rgba(61,139,255,.08);border-color:rgba(61,139,255,.2);color:var(--eng-a);}
+.p-name{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.7rem;line-height:1.2;}
+.p-desc{font-size:.75rem;color:var(--muted2);line-height:1.85;margin-bottom:1.2rem;}
+.p-metrics{display:flex;gap:1.25rem;flex-wrap:wrap;margin-bottom:1.2rem;padding:.85rem;background:rgba(255,255,255,.02);border-radius:6px;border:1px solid var(--border);}
+.p-mv{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);display:block;transition:color .4s;}
+.p-ml{font-size:.57rem;color:var(--muted);letter-spacing:.06em;}
+.p-stack{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.2rem;}
+.s-pill{background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted);font-size:.6rem;padding:.2rem .5rem;border-radius:3px;}
+.p-link{display:inline-flex;align-items:center;gap:.45rem;color:var(--accent);font-size:.67rem;text-decoration:none;transition:gap .2s,color .4s;}
+.p-link:hover{gap:.75rem;}
+
+/* ── PUBLICATION ── */
+#publication{background:var(--bg);}
+.pub-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2.5rem;position:relative;overflow:hidden;max-width:900px;}
+.pub-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:background .4s;}
+.pub-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem;margin-bottom:1.5rem;}
+.pub-venue{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.55rem;transition:color .4s;}
+.pub-title{font-family:'Instrument Serif',serif;font-size:1.3rem;font-weight:400;line-height:1.3;margin-bottom:.4rem;}
+.pub-meta{font-size:.68rem;color:var(--muted);}
+.pub-badge{flex-shrink:0;background:rgba(255,112,67,.1);border:1px solid rgba(255,112,67,.3);color:var(--eng-c);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .8rem;border-radius:100px;white-space:nowrap;}
+.pub-contribs{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.pc-title{font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;color:var(--res-b);margin-bottom:.55rem;}
+.pc-list{list-style:none;display:flex;flex-direction:column;gap:.4rem;}
+.pc-list li{font-size:.73rem;color:var(--muted2);line-height:1.65;padding-left:1rem;position:relative;}
+.pc-list li::before{content:'▸';position:absolute;left:0;color:var(--res-a);font-size:.63rem;}
+.pub-metrics{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:1.5rem;}
+.pm-cell{flex:1;padding:.9rem;text-align:center;border-right:1px solid var(--border);}
+.pm-cell:last-child{border:none;}
+.pm-num{font-family:'Outfit',sans-serif;font-size:1.15rem;font-weight:800;color:var(--res-a);display:block;}
+.pm-lbl{font-size:.56rem;color:var(--muted);letter-spacing:.07em;}
+
+/* ── EDUCATION ── */
+#education{background:var(--bg2);}
+.edu-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:2.5rem;max-width:800px;position:relative;overflow:hidden;}
+.edu-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transition:background .4s;}
+.edu-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;}
+.edu-deg{font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.3rem;}
+.edu-uni{font-size:.72rem;color:var(--accent);transition:color .4s;}
+.edu-gpa{text-align:right;}
+.edu-gpa-n{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);transition:color .4s;}
+.edu-gpa-l{font-size:.57rem;color:var(--muted);letter-spacing:.1em;}
+.edu-period{font-size:.67rem;color:var(--muted);margin-bottom:1.5rem;}
+.edu-courses{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem;}
+.edu-note{font-size:.74rem;color:var(--muted2);line-height:1.7;}
+.edu-note strong{color:var(--text);}
+
+/* ── ACHIEVEMENTS ── */
+#achievements{background:var(--bg);}
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.25rem;}
+.ach-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;transition:border-color .25s,transform .25s;}
+.ach-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.ach-ico{font-size:1.4rem;margin-bottom:.7rem;display:block;}
+.ach-name{font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.4rem;}
+.ach-desc{font-size:.72rem;color:var(--muted2);line-height:1.7;}
+
+/* ── CONTACT ── */
+#contact{background:var(--bg2);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.contact-txt{font-size:.8rem;line-height:1.9;color:var(--muted2);}
+.contact-txt p{margin-bottom:.85rem;}
+.contact-txt strong{color:var(--text);}
+.contact-cards{display:flex;flex-direction:column;gap:.75rem;}
+.cc{display:flex;align-items:center;gap:1rem;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:1rem 1.25rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s;}
+.cc:hover{border-color:var(--accent);transform:translateX(5px);}
+.cc-ic{width:34px;height:34px;flex-shrink:0;background:rgba(255,255,255,.04);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.83rem;color:var(--accent);border:1px solid var(--border);transition:color .4s,border-color .4s;}
+.cc-lbl{font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.15rem;}
+.cc-val{font-size:.76rem;color:var(--text);}
+
+/* Footer */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:1.75rem 3rem;display:flex;justify-content:space-between;align-items:center;font-size:.63rem;color:var(--muted);}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* Responsive */
+@media(max-width:800px){
+  nav{padding:0 1.25rem;}
+  .nav-links{display:none;}
+  #hero{padding:0 1.5rem;}
+  .hero-grid{grid-template-columns:1fr;padding-top:80px;padding-bottom:3rem;}
+  .hero-card{display:none;}
+  section{padding:4rem 1.5rem;}
+  .about-grid,.contact-grid{grid-template-columns:1fr;gap:2rem;}
+  .exp-item{grid-template-columns:1fr;gap:.5rem;}
+  .exp-dt{text-align:left;}
+  .rexp-grid,.pub-contribs,.pub-metrics{flex-direction:column;}
+  .pub-metrics{flex-wrap:wrap;}
+  footer{flex-direction:column;gap:.5rem;text-align:center;}
+}
+</style>
+</head>
+<body id="body">
+
+<div class="cur" id="curDot"><div class="cur-dot"></div></div>
+<div class="cur" id="curRing"><div class="cur-ring"></div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">KEH<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#publication">Research</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="btnEng" onclick="setMode('engineer')">⚙&nbsp;ML Engineer</button>
+    <button class="mode-btn" id="btnRes" onclick="setMode('researcher')">🔬&nbsp;Researcher</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-scanlines"><span></span><span></span><span></span></div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-badge eng-only"><span class="bdot"></span>Machine Learning Engineer</div>
+      <div class="hero-badge res-only"><span class="bdot"></span>Entry-Level Researcher · ML &amp; Cybersecurity</div>
+      <h1 class="hero-name">Kazi<br><span class="outline">Eajaj</span><br>Hossain</h1>
+      <p class="hero-role eng-only">Building <strong>production ML</strong> systems<br>that survive the real world</p>
+      <p class="hero-role res-only">Advancing <strong>security research</strong><br>through rigorous empirical ML</p>
+      <p class="hero-desc eng-only">ML Engineer specializing in deep learning, graph neural networks, and applied NLP. I build end-to-end pipelines — from raw data to optimized inference — with a relentless focus on robustness under distribution shift.</p>
+      <p class="hero-desc res-only">Final-year B.Tech student (GPA&nbsp;8.67) and solo author under review at <strong>IEEE&nbsp;T-IFS</strong> (IF&nbsp;6.8). Research spans temporal ensemble learning, GNN-based malware detection, Dempster–Shafer fusion, and adversarial robustness evaluation.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-p">View Projects →</a>
+        <a href="#contact" class="btn btn-g">Get in Touch</a>
+        <a href="https://github.com/eajajhossain" class="btn btn-g" target="_blank">GitHub ↗</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hc-label">// Key Metrics</div>
+      <div class="hc-stats">
+        <div class="hc-stat"><span class="hc-s-label">AUC — TESSERACT holdout</span><span class="hc-s-val">99.99<span class="hc-s-unit">%</span></span></div>
+        <div class="hc-stat"><span class="hc-s-label">False Positive Rate</span><span class="hc-s-val">0.10<span class="hc-s-unit">%</span></span></div>
+        <div class="hc-stat"><span class="hc-s-label">FPR reduction (CFG pooling)</span><span class="hc-s-val">90.6<span class="hc-s-unit">%</span></span></div>
+        <div class="hc-stat"><span class="hc-s-label">GPA</span><span class="hc-s-val">8.67<span class="hc-s-unit">/10</span></span></div>
+      </div>
+      <div class="hc-links">
+        <a href="https://github.com/eajajhossain/HYMAD" class="hc-link" target="_blank"><span class="hc-link-ic">&lt;/&gt;</span>HyMaD on GitHub</a>
+        <a href="https://linkedin.com/in/kazi-eajaj-hossain-0a9613276" class="hc-link" target="_blank"><span class="hc-link-ic">in</span>LinkedIn Profile</a>
+        <a href="mailto:eajajhossain890@gmail.com" class="hc-link"><span class="hc-link-ic">@</span>eajajhossain890@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="eyebrow">01 — About</div>
+  <h2 class="sec-title">Who I <em>am</em></h2>
+  <div class="about-grid reveal">
+    <div class="about-txt eng-only">
+      <p>I'm a <strong>Machine Learning Engineer</strong> based in Kolkata, India, focused on building systems that work — not just in notebooks, but in production. My speciality is <span class="hl">deep learning, graph ML, and applied NLP</span>.</p>
+      <p>My flagship project <strong>HyMaD</strong> is the first solo-authored framework to address 4 open malware detection challenges simultaneously — near-perfect AUC, zero data leakage, entirely on a Kaggle T4 GPU.</p>
+      <p>Wrapping up my B.Tech (AIML) at <strong>Brainware University</strong> (GPA&nbsp;8.67) with industry experience from ML and analytics internships. I believe the best models stay robust when the data shifts underneath them.</p>
+    </div>
+    <div class="about-txt res-only">
+      <p>I'm a <strong>final-year B.Tech student and independent researcher</strong> in Kolkata working at the intersection of machine learning and cybersecurity. My focus is <span class="hl">temporal evaluation methodology, evidence-theoretic fusion, and adversarial robustness</span>.</p>
+      <p>I independently executed the full research lifecycle for <strong>HyMaD</strong> — from literature review and dataset curation (134K+ PE samples) to model development and IEEE-format manuscript preparation. Under review at <strong>IEEE T-IFS</strong> (IF&nbsp;6.8, top-10 IEEE security journal).</p>
+      <p>Seeking PhD programs, research collaborations, and roles where rigorous empirical methodology and reproducibility are core values.</p>
+    </div>
+    <div class="skills-list">
+      <div class="sk-row"><div class="sk-name">Deep Learning</div><div class="pills"><span class="pill">PyTorch</span><span class="pill">TensorFlow</span><span class="pill">Keras</span><span class="pill">CNN</span><span class="pill">Transformer</span><span class="pill">Bi-LSTM</span></div></div>
+      <div class="sk-row"><div class="sk-name">Graph ML</div><div class="pills"><span class="pill">torch-geometric</span><span class="pill">GCN / GAT</span><span class="pill">CFG Extraction</span><span class="pill">Graph Autoencoder</span></div></div>
+      <div class="sk-row res-only"><div class="sk-name">Research Methods</div><div class="pills"><span class="pill">TESSERACT Protocol</span><span class="pill">Ablation Design</span><span class="pill">Dempster-Shafer</span><span class="pill">Uncertainty Quant.</span><span class="pill">Adversarial Eval.</span></div></div>
+      <div class="sk-row eng-only"><div class="sk-name">NLP & LLMs</div><div class="pills"><span class="pill">Embeddings</span><span class="pill">Text Classification</span><span class="pill">Prompt Engineering</span><span class="pill">LLM Fine-tuning</span><span class="pill">Whisper</span></div></div>
+      <div class="sk-row"><div class="sk-name">MLOps / Tooling</div><div class="pills"><span class="pill">MLflow</span><span class="pill">Docker</span><span class="pill">Kubernetes</span><span class="pill">FastAPI</span><span class="pill">Scikit-learn</span><span class="pill">LightGBM</span></div></div>
+      <div class="sk-row res-only"><div class="sk-name">Research Tools</div><div class="pills"><span class="pill">Jupyter</span><span class="pill">LaTeX (IEEEtran)</span><span class="pill">Overleaf</span><span class="pill">Kaggle</span><span class="pill">Git / GitHub</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="eyebrow">02 — Experience</div>
+  <h2 class="sec-title">Where I've <em>built</em></h2>
+  <div class="exp-list">
+    <div class="exp-item reveal">
+      <div class="exp-dt"><strong>Oct 2025 – Jan 2026</strong>ML Intern</div>
+      <div class="exp-body">
+        <div class="exp-role">Machine Learning Intern</div>
+        <div class="exp-co">Codeday Labs · Remote (US)</div>
+        <ul class="exp-bul">
+          <li>Built end-to-end ML pipelines (preprocessing, feature engineering, training, evaluation) using Scikit-learn, TensorFlow, and PyTorch.</li>
+          <li>Improved baseline performance through systematic hyperparameter tuning; ensured full reproducibility via version-controlled notebooks.</li>
+          <li class="eng-only">Collaborated with global team members to optimize performance across classification and regression tasks.</li>
+          <li class="res-only">Documented evaluation protocols rigorously — consistent with publication-ready research methodology.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item eng-only reveal">
+      <div class="exp-dt"><strong>Mar 2025 – Jun 2025</strong>Social Media Intern</div>
+      <div class="exp-body">
+        <div class="exp-role">Social Media Experiment Intern</div>
+        <div class="exp-co">Zoca · Bengaluru (Remote)</div>
+        <ul class="exp-bul">
+          <li>Ran daily content experiments targeting location-specific audiences; analyzed reach, impressions, CTR, and engagement rate.</li>
+          <li>Optimized posting time and targeting strategy, improving average engagement metrics.</li>
+          <li>Documented insights and trends to refine content distribution strategy.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH EXPERIENCE (researcher only) -->
+<section id="research-exp" class="res-only">
+  <div class="eyebrow">02b — Research Experience</div>
+  <h2 class="sec-title">Independent <em>research</em></h2>
+  <div class="rexp-card reveal">
+    <div class="rexp-lbl">Sep 2025 – May 2026 · Self-Directed · Kaggle Cloud (NVIDIA T4 GPU, CUDA 12.8)</div>
+    <div class="rexp-title">Independent Researcher — Malware Detection &amp; Evidence Fusion</div>
+    <div class="rexp-meta">Complete solo research lifecycle: literature review → hypothesis → dataset curation (134K+ PE samples) → model development → IEEE manuscript</div>
+    <div class="rexp-grid">
+      <div>
+        <div class="rexp-bl-title">Methodology Highlights</div>
+        <ul class="rexp-bul">
+          <li>TESSERACT-compliant temporal cross-validation with verified zero SHA-256 hash leakage.</li>
+          <li>Ablation design: isolated each pooling statistic; confirmed monotonic FPR reduction 21.62% → 6.76% → 2.03%.</li>
+          <li>Dempster–Shafer mass functions with source-aware discounting; inter-modal conflict measured (K=0.032 vs 0.248).</li>
+          <li>36-configuration sensitivity sweep — all yield identical F1=0.9614, AUC=0.9865.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="rexp-bl-title">Robustness &amp; Scale</div>
+        <ul class="rexp-bul">
+          <li>Adversarial eval on UPX, Themida, MPRESS, FSG packed/obfuscated malware — F1 &gt; 0.96 under complete single-module failure.</li>
+          <li>First empirical quantification of PE-static/CFG corpus overlap: 29.0%.</li>
+          <li>All models, weights, scripts open-sourced — meeting IEEE open-science standards.</li>
+          <li>38,898-sample TESSERACT holdout; 4 public corpora combined.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="eyebrow">03 — Projects</div>
+  <h2 class="sec-title">Systems I've <em>engineered</em></h2>
+  <div class="proj-grid">
+    <div class="proj-card reveal" data-n="01">
+      <div class="p-badge flag">⭐ Flagship</div>
+      <div class="p-name">HyMaD — Hybrid Multi-Modal Malware Detection</div>
+      <p class="p-desc eng-only">First solo-authored system to solve 4 open malware detection challenges simultaneously on Kaggle T4 GPU. Novel φ=[μ‖max‖σ] CFG pooling with Dempster–Shafer fusion. Zero data leakage on 38,898-sample TESSERACT holdout.</p>
+      <p class="p-desc res-only">Three-module framework (temporal LightGBM ensemble + CFG graph MLP + Dempster–Shafer fusion) targeting polymorphic evasion, false positives, concept drift, and static/dynamic analysis gap. Full TESSERACT-compliant temporal validation.</p>
+      <div class="p-metrics">
+        <div><span class="p-mv">99.99%</span><span class="p-ml">AUC</span></div>
+        <div><span class="p-mv">0.10%</span><span class="p-ml">FPR</span></div>
+        <div><span class="p-mv">90.6%</span><span class="p-ml">FPR Reduction</span></div>
+        <div class="res-only"><span class="p-mv">87.7%</span><span class="p-ml">False-Alert Reduction</span></div>
+      </div>
+      <div class="p-stack"><span class="s-pill">Python</span><span class="s-pill">PyTorch</span><span class="s-pill">LightGBM</span><span class="s-pill">torch-geometric</span><span class="s-pill">Dempster-Shafer</span></div>
+      <a href="https://github.com/eajajhossain/HYMAD" class="p-link" target="_blank">View on GitHub →</a>
+    </div>
+    <div class="proj-card eng-only reveal" data-n="02">
+      <div class="p-badge pipe">ML Pipeline</div>
+      <div class="p-name">Adaptive Narrative Audio Retrieval System</div>
+      <p class="p-desc">End-to-end ML pipeline for narrative voice classification, transcription, and retrieval using RAVDESS. 70+ acoustic features (MFCCs, pitch, RMS, spectral) with OpenAI Whisper and progressive fallback query logic.</p>
+      <div class="p-metrics">
+        <div><span class="p-mv">0.8838</span><span class="p-ml">F1 Score</span></div>
+        <div><span class="p-mv">97.5%</span><span class="p-ml">Transcription Acc.</span></div>
+        <div><span class="p-mv">200</span><span class="p-ml">Audio Recordings</span></div>
+      </div>
+      <div class="p-stack"><span class="s-pill">Scikit-learn</span><span class="s-pill">Librosa</span><span class="s-pill">OpenAI Whisper</span><span class="s-pill">NumPy</span><span class="s-pill">Pandas</span></div>
+      <a href="https://github.com/eajajhossain/Human-AI-Technical-Test" class="p-link" target="_blank">View on GitHub →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATION -->
+<section id="publication">
+  <div class="eyebrow">04 — Publication</div>
+  <h2 class="sec-title">Under <em>review</em></h2>
+  <div class="pub-card reveal">
+    <div class="pub-top">
+      <div>
+        <div class="pub-venue">IEEE Transactions on Information Forensics and Security · IF 6.8 · Top-10 IEEE Security Journal</div>
+        <div class="pub-title">HyMaD: A Hybrid Multi-Modal Malware Detection Framework Using CFG Graph Embeddings, Temporal Ensemble Learning, and Dempster–Shafer Evidence Fusion</div>
+        <div class="pub-meta">Solo Author · Submitted May 2026</div>
+      </div>
+      <div class="pub-badge">Under Review</div>
+    </div>
+    <!-- Researcher mode: detailed breakdown -->
+    <div class="pub-contribs res-only">
+      <div>
+        <div class="pc-title">Novel Contributions</div>
+        <ul class="pc-list">
+          <li>φ=[µ‖max‖σ] CFG pooling — σ reduces FPR 90.6% over mean-only (FP: 32→10→3, monotonic).</li>
+          <li>First empirical quantification of PE-static/CFG corpus overlap (29.0%).</li>
+          <li>Source-aware Dempster–Shafer fusion with per-sample discounting.</li>
+          <li>All models, weights, scripts open-sourced per IEEE standards.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="pc-title">Challenges Addressed</div>
+        <ul class="pc-list">
+          <li>Polymorphic evasion and obfuscation robustness.</li>
+          <li>High false positive rates in production environments.</li>
+          <li>Concept drift and temporal distribution shift.</li>
+          <li>Static/dynamic analysis integration gap.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pub-metrics res-only">
+      <div class="pm-cell"><span class="pm-num">0.9999</span><span class="pm-lbl">TESSERACT AUC</span></div>
+      <div class="pm-cell"><span class="pm-num">1.0000</span><span class="pm-lbl">BODMAS-matched AUC</span></div>
+      <div class="pm-cell"><span class="pm-num">2.03%</span><span class="pm-lbl">Graph MLP FPR</span></div>
+      <div class="pm-cell"><span class="pm-num">36</span><span class="pm-lbl">Config Sensitivity Sweep</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="eyebrow">05 — Education</div>
+  <h2 class="sec-title">Where I <em>learned</em></h2>
+  <div class="edu-card reveal">
+    <div class="edu-hd">
+      <div>
+        <div class="edu-deg">B.Tech in Computer Science &amp; Engineering (AI &amp; ML)</div>
+        <div class="edu-uni">Brainware University · Kolkata, West Bengal, India</div>
+      </div>
+      <div class="edu-gpa">
+        <div class="edu-gpa-n">8.67</div>
+        <div class="edu-gpa-l">/ 10.0 GPA</div>
+      </div>
+    </div>
+    <div class="edu-period">Aug 2022 – Aug 2026</div>
+    <div class="edu-courses">
+      <span class="pill">Machine Learning</span><span class="pill">Deep Learning</span><span class="pill">Probability &amp; Statistics</span><span class="pill">Linear Algebra</span><span class="pill">Data Structures &amp; Algorithms</span><span class="pill">Software Engineering</span>
+    </div>
+    <div class="edu-note">
+      <strong>Capstone:</strong> HyMaD hybrid malware detection framework — submitted to IEEE T-IFS.
+      <span class="res-only"> Research focus: temporal ML evaluation, graph-based malware detection, evidence-theoretic multimodal fusion.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="eyebrow">06 — Achievements</div>
+  <h2 class="sec-title">What I've <em>earned</em></h2>
+  <div class="ach-grid">
+    <div class="ach-card reveal"><span class="ach-ico">📄</span><div class="ach-name">IEEE T-IFS Submission</div><div class="ach-desc">Solo author submitted to IEEE Transactions on Information Forensics and Security — top-10 ranked IEEE cybersecurity journal (IF&nbsp;6.8).</div></div>
+    <div class="ach-card reveal"><span class="ach-ico">🔓</span><div class="ach-name">Open-Source Release</div><div class="ach-desc">All trained models, weights, and code publicly available at github.com/eajajhossain/HYMAD — meeting IEEE open-science standards.</div></div>
+    <div class="ach-card reveal"><span class="ach-ico">🏆</span><div class="ach-name">Kaggle Competitions</div><div class="ach-desc">Competed in multiple ML challenges, building and benchmarking end-to-end solutions against global participants.</div></div>
+    <div class="ach-card eng-only reveal"><span class="ach-ico">👥</span><div class="ach-name">Team Leadership</div><div class="ach-desc">Led cross-functional academic and technical project teams, managing task allocation, timelines, and collaborative problem-solving.</div></div>
+    <div class="ach-card res-only reveal"><span class="ach-ico">🧪</span><div class="ach-name">Reproducible Research</div><div class="ach-desc">36-configuration sensitivity analysis, TESSERACT-compliant temporal validation, and full ablation studies — all with zero hash leakage.</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="eyebrow">07 — Contact</div>
+  <h2 class="sec-title">Let's <em>connect</em></h2>
+  <div class="contact-grid">
+    <div class="contact-txt reveal">
+      <p class="eng-only">I'm actively looking for <strong>ML engineering roles</strong>, internships, and project collaborations. If you have a challenging dataset, an interesting system to build, or just want to talk ML — I'm all ears.</p>
+      <p class="res-only">I'm seeking <strong>PhD programs</strong>, research collaborations, and entry-level research roles. If you value rigorous empirical methodology and reproducible experimentation, let's talk.</p>
+      <p>Based in <strong>Kolkata, West Bengal, India</strong> — open to remote opportunities worldwide.</p>
+    </div>
+    <div class="contact-cards reveal">
+      <a href="mailto:eajajhossain890@gmail.com" class="cc"><div class="cc-ic">@</div><div><div class="cc-lbl">Email</div><div class="cc-val">eajajhossain890@gmail.com</div></div></a>
+      <a href="tel:+919083762965" class="cc"><div class="cc-ic">☎</div><div><div class="cc-lbl">Phone</div><div class="cc-val">+91-9083762965</div></div></a>
+      <a href="https://linkedin.com/in/kazi-eajaj-hossain-0a9613276" class="cc" target="_blank"><div class="cc-ic">in</div><div><div class="cc-lbl">LinkedIn</div><div class="cc-val">kazi-eajaj-hossain-0a9613276</div></div></a>
+      <a href="https://github.com/eajajhossain" class="cc" target="_blank"><div class="cc-ic">&lt;/&gt;</div><div><div class="cc-lbl">GitHub</div><div class="cc-val">eajajhossain</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Kazi Eajaj Hossain</span>
+  <span id="fmode">ML Engineer · Kolkata, India</span>
+</footer>
+
+<script>
+function setMode(m) {
+  const body = document.getElementById('body');
+  const bE = document.getElementById('btnEng');
+  const bR = document.getElementById('btnRes');
+  const fm = document.getElementById('fmode');
+  if (m === 'researcher') {
+    body.classList.add('researcher');
+    bE.classList.remove('active'); bR.classList.add('active');
+    fm.textContent = 'Entry-Level Researcher · Kolkata, India';
+  } else {
+    body.classList.remove('researcher');
+    bR.classList.remove('active'); bE.classList.add('active');
+    fm.textContent = 'ML Engineer · Kolkata, India';
+  }
+}
+
+// Cursor
+const dot = document.getElementById('curDot');
+const ring = document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  dot.style.left=mx+'px'; dot.style.top=my+'px';
+});
+(function tr(){
+  rx+=(mx-rx)*.1; ry+=(my-ry)*.1;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(tr);
+})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ dot.querySelector('.cur-dot').style.transform='translate(-50%,-50%) scale(2.5)'; });
+  el.addEventListener('mouseleave',()=>{ dot.querySelector('.cur-dot').style.transform='translate(-50%,-50%) scale(1)'; });
+});
+
+// Scroll reveal
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
